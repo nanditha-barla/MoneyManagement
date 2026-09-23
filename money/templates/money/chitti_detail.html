@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>{{ chitti.name }}</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .month-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .month-amount {
+            margin-top: 8px;
+            font-size: 18px;
+        }
+
+        .month-selector {
+            position: relative;
+        }
+
+        .month-button {
+            background: #222;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .month-list {
+            position: absolute;
+            right: 0;
+            top: 45px;
+            width: 210px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 10;
+        }
+
+        .month-selector:hover .month-list {
+            display: block;
+        }
+
+        .month-item {
+            display: block;
+            padding: 10px 14px;
+            text-decoration: none;
+            color: #222;
+        }
+
+        .month-item.completed {
+            color: #111;
+            font-weight: 600;
+        }
+
+        .month-item.current {
+            background: #e7f0ff;
+            color: #173b70;
+            font-weight: bold;
+        }
+
+        .month-item.locked {
+            color: #bbb;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th,
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #f2f2f2;
+        }
+
+        .paid {
+            color: #16803c;
+            font-weight: bold;
+        }
+
+        .not-paid {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .take-button {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            background: #174ea6;
+            color: white;
+        }
+
+        .take-button.disabled {
+            background: #c9d7eb;
+            color: #71829b;
+            pointer-events: none;
+        }
+
+        .taken-button {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            background: #0b3d91;
+            color: white;
+        }
+
+        .action-button {
+    display: inline-block;
+    padding: 7px 13px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    background: #174ea6;
+    color: white;
+}
+        .disabled-button {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+        .me-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f7f7f7;
+            border-radius: 8px;
+        }
+
+        .me-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .me-button {
+            padding: 9px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            background: #174ea6;
+            color: white;
+            font-weight: bold;
+        }
+
+        .me-button.disabled {
+            background: #c9d7eb;
+            color: #71829b;
+            pointer-events: none;
+        }
+
+        .pending {
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .complete-area {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .complete-button {
+            padding: 11px 18px;
+            border-radius: 6px;
+            background: #222;
+            color: white;
+            text-decoration: none;
+        }
+
+        .complete-button.disabled {
+            background: #ccc;
+            color: #777;
+            pointer-events: none;
+        }
+
+        .bottom-actions {
+            margin-top: 25px;
+            padding-bottom: 10px;
+        }
+
+        .home-button {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 6px;
+            background: #174ea6;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+
+
+    
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <div>
+
+            <div class="month-title">
+                {{ chitti.name }}
+            </div>
+
+            <div class="month-amount">
+                {{ selected_month.month|date:"F Y" }}
+                —
+                ₹{{ selected_month.chitti_amount }}
+            </div>
+
+        </div>
+
+
+        <div class="month-selector">
+
+            <button class="month-button">
+                Select Month ▾
+            </button>
+
+            <div class="month-list">
+
+                {% for month in months %}
+
+                    {% if month.is_completed %}
+
+                        <a
+                            class="month-item completed"
+                            href="{% url 'chitti_detail' chitti.id %}?month={{ month.id }}"
+                        >
+                            {{ month.month|date:"F Y" }}
+                        </a>
+
+                    {% elif month.id == current_month.id %}
+
+                        <a
+                            class="month-item current"
+                            href="{% url 'chitti_detail' chitti.id %}?month={{ month.id }}"
+                        >
+                            {{ month.month|date:"F Y" }}
+                        </a>
+
+                    {% else %}
+
+                        <span class="month-item locked">
+                            {{ month.month|date:"F Y" }}
+                        </span>
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+    <h3 style="margin-top: 35px;">
+        Regular Members
+    </h3>
+
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Person</th>
+                <th>Paid</th>
+                <th>Due</th>
+                <th>Status</th>
+                <th>Chitti</th>
+                <th>Pay Due</th>
+                <th>Open</th>
+                <th>Edit</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for row in rows %}
+
+                <tr>
+
+                    <td>
+                        {{ row.participant.name }}
+                    </td>
+
+
+                    <td>
+
+    {% if row.has_payment %}
+
+        ₹{{ row.paid }}
+
+    {% else %}
+
+        <a
+            class="action-button"
+            href="{% url 'add_payment' chitti.id row.participant.id %}?month={{ selected_month.id }}"
+        >
+            Enter Amount
+        </a>
+
+    {% endif %}
+
+</td>
+
+                    
+                        <td>
+    {% if row.has_payment %}
+        ₹{{ row.due }}
+    {% else %}
+        —
+    {% endif %}
+</td>
+   <td>
+    {% if row.has_payment %}
+        {% if row.due == 0 %}
+            <span class="paid">
+                Paid
+            </span>
+        {% else %}
+            <span class="not-paid">
+                Not Paid
+            </span>
+        {% endif %}
+    {% else %}
+        —
+    {% endif %}
+</td>
+<td>
+
+    {% if row.take_this_month %}
+
+        <a
+            class="taken-button"
+            href="{% url 'take_chitti' chitti.id row.participant.id %}?month={{ selected_month.id }}"
+        >
+            Taken
+        </a>
+
+    {% elif row.previous_take %}
+
+        <span class="take-button disabled">
+            {{ row.previous_take.month.month|date:"F Y" }}
+        </span>
+
+    {% elif row.any_taker %}
+
+        <span class="take-button disabled">
+            Take
+        </span>
+
+    {% else %}
+
+        <a
+            class="take-button"
+            href="{% url 'take_chitti' chitti.id row.participant.id %}?month={{ selected_month.id }}"
+        >
+            Take
+        </a>
+
+    {% endif %}
+
+</td>
+                    <td>
+    {% if row.due > 0 %}
+        <a class="action-button"
+           href="{% url 'add_payment' chitti.id row.participant.id %}?month={{ selected_month.id }}">
+            Pay Due
+        </a>
+    {% else %}
+        <span class="action-button disabled-button">
+            Pay Due
+        </span>
+    {% endif %}
+</td>
+
+
+                    <td>
+
+                        <a
+                            class="action-button"
+                            href="{% url 'person_view' chitti.id row.participant.id %}"
+                        >
+                            View
+                        </a>
+
+                    </td>
+
+
+                    <td>
+
+                        <a
+    class="action-button"
+    href="{% url 'payment_history' chitti.id row.participant.id %}?month={{ selected_month.id }}"
+>
+    Edit
+</a>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+
+    <div class="me-section">
+
+        <h3>ME</h3>
+
+        <div class="me-actions">
+
+            <a
+                class="me-button"
+                href="{% url 'add_me_amount' chitti.id %}?month={{ selected_month.id }}"
+            >
+                + Add Amount
+            </a>
+
+
+            {% if me_take %}
+
+    <a
+        class="me-button"
+        href="{% url 'take_me_chitti' chitti.id %}?month={{ selected_month.id }}"
+    >
+        Taken
+    </a>
+
+{% elif me_previous_take %}
+
+    <span class="me-button disabled">
+        {{ me_previous_take.month.month|date:"F Y" }}
+    </span>
+
+{% elif any_taker %}
+
+    <span class="me-button disabled">
+        Take Chitti
+    </span>
+
+{% else %}
+
+    <a
+        class="me-button"
+        href="{% url 'take_me_chitti' chitti.id %}?month={{ selected_month.id }}"
+    >
+        Take Chitti
+    </a>
+
+{% endif %}
+
+            <a
+                class="me-button"
+                href="{% url 'me_view' chitti.id %}"
+            >
+                View
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="pending">
+
+        Total Amount Pending This Month:
+        ₹{{ total_pending }}
+
+    </div>
+    
+
+    <div class="complete-area">
+
+        
+
+        {% if can_complete %}
+
+            <a
+                class="complete-button"
+                href="{% url 'complete_month' chitti.id %}?month={{ selected_month.id }}"
+            >
+                Complete {{ selected_month.month|date:"F Y" }}
+            </a>
+
+        {% else %}
+
+            <span class="complete-button disabled">
+                Complete {{ selected_month.month|date:"F Y" }}
+            </span>
+
+        {% endif %}
+    <div class="bottom-actions">
+    <a href="{% url 'home' %}" class="home-button">
+        Home
+    </a>
+</div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

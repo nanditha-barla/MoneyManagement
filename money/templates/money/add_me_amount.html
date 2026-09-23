@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Add ME Amount</title>
+
+</head>
+
+<body>
+
+<h2>Add Amount for ME</h2>
+
+<p>
+    Month: {{ selected_month.month|date:"F Y" }}
+</p>
+
+{% if error %}
+
+    <p style="color:red;">
+        {{ error }}
+    </p>
+
+{% endif %}
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <label>
+        Amount
+    </label>
+
+    <input
+        type="number"
+        name="amount"
+        min="0.01"
+        step="0.01"
+        required
+    >
+
+    <button type="submit">
+        Add Amount
+    </button>
+
+</form>
+
+<br>
+
+<a
+    href="{% url 'chitti_detail' chitti.id %}?month={{ selected_month.id }}"
+>
+    Cancel
+</a>
+
+</body>
+
+</html>

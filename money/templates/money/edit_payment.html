@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Edit Payment</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            width: 500px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
+        .error {
+            background: #ffe5e5;
+            color: #b00020;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        button,
+        a {
+            padding: 10px 18px;
+            border-radius: 5px;
+            border: none;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        button {
+            background: #222;
+            color: white;
+            cursor: pointer;
+        }
+
+        a {
+            background: #ddd;
+            color: #222;
+        }
+
+        .buttons {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Edit Payment</h2>
+
+    <p>
+        <strong>Person:</strong>
+        {{ participant.name }}
+    </p>
+
+    <p>
+        <strong>Month:</strong>
+        {{ selected_month.month|date:"F Y" }}
+    </p>
+
+    {% if error %}
+
+        <div class="error">
+            {{ error }}
+        </div>
+
+    {% endif %}
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label for="amount">
+            Amount Paid
+        </label>
+
+        <input
+            type="number"
+            id="amount"
+            name="amount"
+            min="0"
+            max="{{ maximum_allowed }}"
+            step="0.01"
+            value="{{ payment.amount }}"
+            required
+            autofocus
+        >
+
+        <p>
+            Maximum allowed:
+            ₹{{ maximum_allowed }}
+        </p>
+
+        <div class="buttons">
+
+            <button type="submit">
+                Update Payment
+            </button>
+
+            <a
+                href="{% url 'chitti_detail' chitti.id %}?month={{ selected_month.id }}"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

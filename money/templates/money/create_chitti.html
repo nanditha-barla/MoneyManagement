@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Create Chitti</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            width: 700px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        /* Remove number input spinner arrows */
+
+        input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .info {
+            background-color: #f1f1f1;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            background-color: #ffe5e5;
+            color: #b00020;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .participant-row {
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button,
+        .cancel-button {
+            padding: 11px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            text-decoration: none;
+        }
+
+        button {
+            background-color: #222;
+            color: white;
+        }
+
+        .cancel-button {
+            background-color: #ddd;
+            color: #222;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h2>Create Chitti</h2>
+
+
+    {% if error %}
+
+        <div class="error">
+            {{ error }}
+        </div>
+
+    {% endif %}
+
+
+    <form method="POST" id="chitti-form">
+
+        {% csrf_token %}
+
+
+        <!-- Chitti Name -->
+
+        <div class="form-group">
+
+            <label for="chitti_name">
+                Chitti Name
+            </label>
+
+            <input
+                type="text"
+                id="chitti_name"
+                name="chitti_name"
+                required
+            >
+
+        </div>
+
+
+        <!-- Number of Persons -->
+
+        <div class="form-group">
+
+            <label for="number_of_persons">
+                Number of Persons
+            </label>
+
+            <input
+                type="number"
+                id="number_of_persons"
+                name="number_of_persons"
+                min="1"
+                step="1"
+                required
+            >
+
+        </div>
+
+
+        <!-- Total Amount -->
+
+        <div class="form-group">
+
+            <label for="total_amount">
+                Total Amount
+            </label>
+
+            <input
+                type="number"
+                id="total_amount"
+                name="total_amount"
+                min="0"
+                step="0.01"
+                required
+            >
+
+        </div>
+
+
+        <!-- Monthly Amount -->
+
+        <div class="form-group">
+
+            <label for="monthly_amount">
+                Monthly Amount
+            </label>
+
+            <input
+                type="number"
+                id="monthly_amount"
+                name="monthly_amount"
+                min="0"
+                step="0.01"
+                required
+            >
+
+        </div>
+
+
+        <!-- Amount After Taking Chitti -->
+
+        <div class="form-group">
+
+            <label for="amount_after_taking">
+                Amount After Taking Chitti
+            </label>
+
+            <input
+                type="number"
+                id="amount_after_taking"
+                name="amount_after_taking"
+                min="0"
+                step="0.01"
+                required
+            >
+
+        </div>
+
+
+        <!-- Duration -->
+
+        <div class="form-group">
+
+            <label for="duration_months">
+                Duration (Months)
+            </label>
+
+            <input
+                type="number"
+                id="duration_months"
+                name="duration_months"
+                min="1"
+                step="1"
+                required
+            >
+
+        </div>
+
+
+        <!-- Start Date -->
+
+        <div class="form-group">
+
+            <label for="start_date">
+                Start Date
+            </label>
+
+            <input
+                type="date"
+                id="start_date"
+                name="start_date"
+                required
+            >
+
+        </div>
+
+
+        <!-- Starting Chitti Amount -->
+
+        <div class="form-group">
+
+            <label for="starting_chitti_amount">
+                Starting Chitti Amount
+            </label>
+
+            <input
+                type="number"
+                id="starting_chitti_amount"
+                name="starting_chitti_amount"
+                min="0"
+                step="0.01"
+                required
+            >
+
+        </div>
+
+
+        <!-- Amount to be Added -->
+
+        <div class="form-group">
+
+            <label for="amount_to_be_added">
+                Amount to be Added
+            </label>
+
+            <input
+                type="number"
+                id="amount_to_be_added"
+                name="amount_to_be_added"
+                min="0"
+                step="0.01"
+                required
+            >
+
+        </div>
+
+
+        <!-- Participant Names -->
+
+        <div class="section-title">
+            Participant Names
+        </div>
+
+
+        
+
+
+        <div id="participants-container"></div>
+
+
+        <!-- Buttons -->
+
+        <div class="buttons">
+
+            <button type="submit">
+                Save Chitti
+            </button>
+
+            <a
+                href="{% url 'home' %}"
+                class="cancel-button"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    const numberOfPersonsInput =
+        document.getElementById("number_of_persons");
+
+    const participantsContainer =
+        document.getElementById("participants-container");
+
+
+    function generateParticipants() {
+
+        const count =
+            parseInt(numberOfPersonsInput.value) || 0;
+
+
+        participantsContainer.innerHTML = "";
+
+
+        for (let i = 0; i < count; i++) {
+
+            const row =
+                document.createElement("div");
+
+            row.className = "participant-row";
+
+
+            const input =
+                document.createElement("input");
+
+            input.type = "text";
+
+            input.name =
+                `participant_${i}`;
+
+            input.placeholder =
+                `Participant ${i + 1} Name`;
+
+            input.required = true;
+
+
+            row.appendChild(input);
+
+            participantsContainer.appendChild(row);
+
+
+            /*
+             * Press Enter to move to
+             * the next participant.
+             */
+
+            input.addEventListener(
+                "keydown",
+                function(event) {
+
+                    if (event.key === "Enter") {
+
+                        event.preventDefault();
+
+
+                        const inputs =
+                            Array.from(
+                                participantsContainer.querySelectorAll(
+                                    "input"
+                                )
+                            );
+
+
+                        const currentIndex =
+                            inputs.indexOf(input);
+
+
+                        if (
+                            currentIndex >= 0 &&
+                            currentIndex < inputs.length - 1
+                        ) {
+
+                            inputs[
+                                currentIndex + 1
+                            ].focus();
+
+                        }
+                        else {
+
+                            document.querySelector(
+                                'button[type="submit"]'
+                            ).focus();
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+
+
+    numberOfPersonsInput.addEventListener(
+        "input",
+        generateParticipants
+    );
+
+
+    generateParticipants();
+
+</script>
+
+
+</body>
+</html>

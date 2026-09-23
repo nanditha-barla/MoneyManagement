@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Payment History</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            width: 700px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #f2f2f2;
+        }
+
+        a {
+            color: #174ea6;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back {
+            margin-top: 25px;
+            display: inline-block;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Edit Payments</h2>
+
+    <p>
+        <strong>Person:</strong>
+        {{ participant.name }}
+    </p>
+
+    <p>
+        <strong>Month:</strong>
+        {{ selected_month.month|date:"F Y" }}
+    </p>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>Payment</th>
+                <th>Amount</th>
+                <th>Edit</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for payment in payments %}
+
+                <tr>
+
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+
+                    <td>
+                        ₹{{ payment.amount }}
+                    </td>
+
+                    <td>
+                        <a
+                            href="{% url 'edit_payment' payment.id %}"
+                        >
+                            Edit
+                        </a>
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="3">
+                        No payments entered for this month.
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <a
+        class="back"
+        href="{% url 'chitti_detail' chitti.id %}?month={{ selected_month.id }}"
+    >
+        Back to Chitti
+    </a>
+
+</div>
+
+</body>
+
+</html>

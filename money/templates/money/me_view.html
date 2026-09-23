@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>ME - {{ chitti.name }}</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 30px;
+        }
+
+        .container {
+            width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h2>ME</h2>
+
+    <p>
+        {{ chitti.name }}
+    </p>
+
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>Month</th>
+                <th>Amount</th>
+                <th>Chitti</th>
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for item in history %}
+
+                <tr>
+
+                    <td>
+                        {{ item.month.month|date:"F Y" }}
+                    </td>
+
+                    <td>
+
+                        {% if item.amount == 0 %}
+
+                            -
+
+                        {% else %}
+
+                            ₹{{ item.amount }}
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if item.taken %}
+
+                            Yes
+
+                        {% else %}
+
+                            No
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+
+    <br>
+
+    <a href="{% url 'chitti_detail' chitti.id %}">
+        Back to Chitti
+    </a>
+
+</div>
+
+</body>
+
+</html>

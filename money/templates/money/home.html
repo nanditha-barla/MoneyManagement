@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Money Management</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 30px;
+            background-color: #f5f6fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .top-bar h2 {
+            margin: 0;
+        }
+
+        .add-button {
+            background-color: #2563eb;
+            color: white;
+            padding: 10px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .add-button:hover {
+            background-color: #1d4ed8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #e5e7eb;
+        }
+
+        .empty-message {
+    text-align: center;
+    padding: 30px;
+    background-color: white;
+    border: 1px solid #ddd;
+}
+
+.home-action-button {
+    display: inline-block;
+    padding: 7px 13px;
+    border-radius: 5px;
+    border: none;
+    background: #174ea6;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.home-action-button:hover {
+    background-color: #123d82;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Money Management</h1>
+
+    <div class="top-bar">
+        <h2>My Chittis</h2>
+
+        <a href="{% url 'create_chitti' %}" class="add-button">
+            + Add Chitti
+        </a>
+    </div>
+
+    {% if chittis %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Chitti Name</th>
+                    <th>Total Amount</th>
+                    <th>Duration</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Open</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for chitti in chittis %}
+
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ chitti.name }}</td>
+                        <td>₹{{ chitti.total_amount }}</td>
+                        <td>{{ chitti.duration_months }} Months</td>
+                        <td>{{ chitti.start_date }}</td>
+                        <td>{{ chitti.get_end_date|date:"F j, Y" }}</td>
+                        <td>Active</td>
+
+                        <td><a
+    href="{% url 'chitti_detail' chitti.id %}"
+    class="home-action-button"
+>
+    View
+</a> </td>
+                           
+
+                        <td>
+                            <a
+    href="{% url 'edit_chitti' chitti.id %}"
+    class="home-action-button"
+>
+    Edit
+</a>
+                        </td>
+
+                        <td>
+                            <form
+    method="post"
+    action="{% url 'delete_chitti' chitti.id %}"
+    style="display:inline;"
+>
+    {% csrf_token %}
+
+    <button
+    type="submit"
+    class="home-action-button"
+    onclick="return confirm('Are you sure you want to delete this Chitti? This will permanently delete its members, months, payments and Chitti history.');"
+>
+    Delete
+</button>
+</form>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% else %}
+
+        <div class="empty-message">
+            <p>No chittis have been added yet.</p>
+            <p>Click <strong>+ Add Chitti</strong> to create your first chitti.</p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
