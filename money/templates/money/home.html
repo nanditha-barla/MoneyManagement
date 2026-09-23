@@ -86,6 +86,19 @@
 .home-action-button:hover {
     background-color: #123d82;
 }
+.logout-button {
+    background-color: #dc2626;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background-color: #b91c1c;
+}
     </style>
 </head>
 
@@ -101,6 +114,12 @@
         <a href="{% url 'create_chitti' %}" class="add-button">
             + Add Chitti
         </a>
+        <form method="post" action="{% url 'logout' %}" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" class="logout-button">
+        Logout
+    </button>
+</form>
     </div>
 
     {% if chittis %}
