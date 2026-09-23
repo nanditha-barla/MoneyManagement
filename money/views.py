@@ -4,6 +4,7 @@ from decimal import Decimal, InvalidOperation
 from django.db import transaction
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
 
 from .models import (
     Chitti,
@@ -25,7 +26,7 @@ def add_months(start_date, months):
 
     return date(year, month, 1)
 
-
+@login_required
 def home(request):
     chittis = Chitti.objects.all().order_by("id")
 

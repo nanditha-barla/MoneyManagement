@@ -1,5 +1,5 @@
 from django.urls import path
-
+from django.contrib.auth import views as auth_views
 from . import views
 
 
@@ -89,5 +89,12 @@ path(
     "chitti/<int:chitti_id>/edit/",
     views.edit_chitti,
     name="edit_chitti"
+),
+path(
+    "login/",
+    auth_views.LoginView.as_view(
+        template_name="money/login.html"
+    ),
+    name="login",
 ),
 ]
